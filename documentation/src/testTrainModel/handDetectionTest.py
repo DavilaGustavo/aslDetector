@@ -3,9 +3,15 @@ import mediapipe as mp
 import numpy as np
 from tensorflow.keras.models import model_from_json
 
+# Variáveis para ajustes
+totalHands = 2      # Aumente ou diminua a quantidade de mãos a detectar
+square_scale = 1.2  # Aumente ou diminua para alterar o tamanho do quadrado
+detectionColour = (25,25,230)
+imageFile = 'image5.png'
+
 # Inicializar MediaPipe Hand Detection
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1)
+hands = mp_hands.Hands(static_image_mode=True, max_num_hands=totalHands)
 mp_drawing = mp.solutions.drawing_utils
 
 # Carregar o modelo salvo
@@ -14,9 +20,6 @@ model_json = json_file.read()
 json_file.close()
 model = model_from_json(model_json)
 model.load_weights('signLanguageModel.keras')
-
-# Variável para ajustar o tamanho do quadrado
-square_scale = 1.5  # Aumente ou diminua para alterar o tamanho do quadrado
 
 # Preprocessamento da imagem de entrada para MediaPipe e o modelo
 def preprocess_image(img, hand_landmarks):
@@ -44,7 +47,7 @@ def preprocess_image(img, hand_landmarks):
     y_max_square = int(min(h, y_center + square_size // 2))
 
     # Desenhar retângulo ao redor da mão (agora um quadrado)
-    cv2.rectangle(img, (x_min_square, y_min_square), (x_max_square, y_max_square), (0, 255, 0), 2)
+    cv2.rectangle(img, (x_min_square, y_min_square), (x_max_square, y_max_square), detectionColour, 2)
 
     # Recortar a área da mão
     hand_img = img[y_min_square:y_max_square, x_min_square:x_max_square]
@@ -57,43 +60,40 @@ def preprocess_image(img, hand_landmarks):
     hand_img_normalized = hand_img_gray / 255.0
 
     # Reshape para o formato esperado pelo modelo
-    hand_img_reshaped = hand_img_normalized.reshape(1, 28, 28, 1)
+    hand_img_reshaped = hand_img_normalized.reshape(-1, 28, 28, 1)
 
-    return hand_img_reshaped  # Retornar apenas a imagem processada
+    return hand_img_reshaped, x_min_square, y_min_square  # Retornar a imagem processada e as coordenadas do quadrado
 
 # Carregar a imagem de teste
-img = cv2.imread('image2.png')
+img = cv2.imread(imageFile)
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
 # Detectar a mão na imagem
 results = hands.process(img_rgb)
 
 # Verificar se a mão foi detectada
 if results.multi_hand_landmarks:
+    # Passa por cada mão
     for hand_landmarks in results.multi_hand_landmarks:
-        # Preprocessar a área da mão detectada
-        hand_img = preprocess_image(img, hand_landmarks)
+        # Preprocessar a área da mão detectada para o formato que o modelo espera
+        hand_img, x_min_square, y_min_square = preprocess_image(img, hand_landmarks) # 28x28 cinza
 
         # Fazer a predição com o modelo treinado
         prediction = model.predict(hand_img)
-        predicted_class = np.argmax(prediction)
+        predicted_class = np.argmax(prediction) # Retorna qual o mais provavel das letras
 
         # Converter a predição numérica para a letra correspondente
-        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
-                    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
-        # Converter a predição numérica para a letra correspondente
-        if predicted_class < len(alphabet):
-            predicted_letter = alphabet[predicted_class]
-        else:
-            predicted_letter = "Unknown"  # Ou outra mensagem de erro adequada
+        predicted_letter = alphabet[predicted_class]
 
-        print("Prediction:", prediction)
+        #print("Prediction:", prediction)
         print("Predicted class index:", predicted_class)
 
-        
-        # Exibir a predição na imagem original
-        cv2.putText(img, f"Predicted: {predicted_letter}", (10, 30), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # Exibir a predição acima do quadrado ao redor da mão
+        cv2.putText(img, f"Predicted: {predicted_letter}", 
+                    (x_min_square, y_min_square - 10),  # Posição ajustada para cima do quadrado
+                    cv2.FONT_HERSHEY_TRIPLEX, 0.6, detectionColour, 2)
 
 # Exibir a imagem final com as predições (sem os processamentos mostrados)
 cv2.imshow('Hand Detection', img)
