@@ -6,13 +6,13 @@ from tensorflow.keras.models import model_from_json
 # Variáveis para ajustes
 totalHands = 2      # Aumente ou diminua a quantidade de mãos a detectar
 square_scale = 1.2  # Aumente ou diminua para alterar o tamanho do quadrado
+bones = False       # Mostrar ou não as ligações que identificam a mão
 detectionColour = (25,25,230)
 imageFile = 'image5.png'
 
 # Inicializar MediaPipe Hand Detection
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=True, max_num_hands=totalHands)
-mp_drawing = mp.solutions.drawing_utils
 
 # Carregar o modelo salvo
 json_file = open('signLanguageModel.json', 'r')
@@ -87,13 +87,19 @@ if results.multi_hand_landmarks:
         # Converter a predição numérica para a letra correspondente
         predicted_letter = alphabet[predicted_class]
 
+        # Desenhar landmarks e conexões na imagem
+        if(bones):
+            mp_drawing = mp.solutions.drawing_utils
+            mp_drawing.draw_landmarks(img, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
         #print("Prediction:", prediction)
-        print("Predicted class index:", predicted_class)
+        print("Predicted letter:", predicted_letter)
 
         # Exibir a predição acima do quadrado ao redor da mão
+        print(y_min_square)
         cv2.putText(img, f"Predicted: {predicted_letter}", 
-                    (x_min_square, y_min_square - 10),  # Posição ajustada para cima do quadrado
-                    cv2.FONT_HERSHEY_TRIPLEX, 0.6, detectionColour, 2)
+                    (x_min_square + 5, y_min_square + 20),  # Posição ajustada para dentro do quadrado
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, detectionColour, 2)
 
 # Exibir a imagem final com as predições (sem os processamentos mostrados)
 cv2.imshow('Hand Detection', img)
