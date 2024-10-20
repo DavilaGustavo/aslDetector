@@ -27,6 +27,7 @@ plt.figure(figsize=(15,7))
 
 y_train.value_counts().sort_values(ascending=False).plot(kind='bar', color='skyblue')
 plt.title("Number of sign language classes")
+plt.savefig("outputs/sign_language_classes_chart.png")  # Salva a imagem como PNG
 plt.show()
 
 x_train = dataTrain.drop(['label'], axis=1)
@@ -184,6 +185,8 @@ ax[1].set_title('Testing Accuracy & Loss')
 ax[1].legend()
 ax[1].set_xlabel("Epochs")
 ax[1].set_ylabel("Loss")
+
+plt.savefig("outputs/training_validation_graph.png")  # Salva a imagem como PNG
 plt.show()
 
 

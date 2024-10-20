@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 # Variáveis para ajustes
 totalHands = 3      # Aumente ou diminua a quantidade de mãos a detectar
 square_scale = 1.4  # Aumente ou diminua para alterar o tamanho do quadrado
-bones = False       # Mostrar ou não as ligações que identificam a mão
+bones = True       # Mostrar ou não as ligações que identificam a mão
 detectionColour = (25, 200, 70)
 
 # Inicializar MediaPipe Hand Detection
@@ -23,11 +23,11 @@ alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
             'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
 # Abrir o arquivo de vídeo
-video_file = "handTest3.mp4"
+video_file = "inputs/aslAlphabet.mp4"
 cap = cv2.VideoCapture(video_file)
 
 # Definir o arquivo de saída
-output_file = 'handTestResultVideo.mp4'
+output_file = 'outputs/handTestResultVideo.mp4'
 fps = cap.get(cv2.CAP_PROP_FPS)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))

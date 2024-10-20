@@ -6,9 +6,12 @@ import numpy as np
 label_mapping = {chr(i): i - 65 for i in range(65, 91) if chr(i) not in ['J', 'Z']}  # A=0, B=1, C=2, ..., I=8
 
 # Função para converter e salvar as imagens em dois arquivos CSV
-def convert_images_to_csv(data_folder, output_train_csv, output_test_csv):
+def convert_images_to_csv(data_folder, output_train_csv, output_test_csv, percent):
     # Dicionário para armazenar os dados das imagens por letra
     all_data = {label: [] for label in label_mapping.values()}
+    
+    # Contador para rótulos 9
+    count_label_9 = 0
 
     # Percorrendo as subpastas
     for label_folder in os.listdir(data_folder):
@@ -44,8 +47,15 @@ def convert_images_to_csv(data_folder, output_train_csv, output_test_csv):
                             # Adicionando o rótulo e os pixels ao dicionário
                             all_data[label].append(np.insert(flattened_array, 0, label))
 
+                            # Contar quantos rótulos '9' existem
+                            if label == 9:
+                                count_label_9 += 1
+
                         except Exception as e:
                             print(f"Erro ao processar a imagem {image_path}: {e}")
+
+    # Exibir quantos rótulos 9 foram encontrados
+    print(f"Labels with a '9' (J): {count_label_9}")
 
     # Listas para armazenar os dados de treino e teste
     train_data = []
@@ -54,9 +64,12 @@ def convert_images_to_csv(data_folder, output_train_csv, output_test_csv):
     # Dividindo os dados de cada letra
     for label, data in all_data.items():
         num_test_samples = int(len(data) * 0.1)  # 10% para teste
-        #np.random.shuffle(data)  # Embaralhar os dados
-        test_data.extend(data[:num_test_samples])  # Adicionar os dados de teste
-        train_data.extend(data[num_test_samples:])  # Adicionar os dados de treino
+        num_train_samples = int(len(data[num_test_samples:]) * percent)  # Percentual de treino
+        num_test_samples = int(len(data[:num_test_samples]) * percent)  # Percentual de teste
+
+        # Adicionando os dados de treino e teste selecionados
+        test_data.extend(data[:num_test_samples])  
+        train_data.extend(data[num_test_samples:num_test_samples + num_train_samples])  
 
     # Embaralhar os dados
     np.random.shuffle(test_data)
@@ -71,8 +84,9 @@ def convert_images_to_csv(data_folder, output_train_csv, output_test_csv):
     np.savetxt(output_test_csv, test_data, delimiter=',', fmt='%s', header=','.join(['label'] + [f'pixel{i+1}' for i in range(4096)]), comments='')
 
 # Exemplo de uso
-data_folder = '../data/asl_alphabet_train'  # Caminho da pasta com as letras
-output_train_csv = 'asl_alphabet_train.csv'  # Nome do arquivo CSV de saída para treino
-output_test_csv = 'asl_alphabet_test.csv'  # Nome do arquivo CSV de saída para teste
+percent = 0.25
+data_folder = '../data/MezclaDatasets'  # Caminho da pasta com as letras
+output_train_csv = '../imagesToCSV/asl_alphabet_train.csv'  # Nome do arquivo CSV de saída para treino
+output_test_csv = '../imagesToCSV/asl_alphabet_test.csv'  # Nome do arquivo CSV de saída para teste
 
-convert_images_to_csv(data_folder, output_train_csv, output_test_csv)
+convert_images_to_csv(data_folder, output_train_csv, output_test_csv, percent)  # Usando 25% dos dados
