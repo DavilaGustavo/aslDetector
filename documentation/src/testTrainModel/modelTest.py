@@ -23,7 +23,7 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 # Preprocessar os dados de teste
-dataTest = pd.read_csv('data/sign_mnist_test/sign_mnist_test.csv')
+dataTest = pd.read_csv('data/asl_alphabet_test.csv')
 y_test = dataTest['label']
 
 x_test = dataTest.drop(['label'], axis=1)
@@ -31,8 +31,8 @@ x_test = dataTest.drop(['label'], axis=1)
 # Normalizar os dados
 x_test = x_test / 255.0
 
-# Remodelar os dados para (28, 28, 1)
-x_test = x_test.values.reshape(-1, 28, 28, 1)
+# Remodelar os dados para (64, 64, 1)
+x_test = x_test.values.reshape(-1, 64, 64, 1)
 
 # Mapeamento de números para letras do alfabeto (sem o J e o Z)
 num_to_char = {i: chr(65+i) for i in range(25) if i != 9}  # 65 é 'A' na tabela ASCII
@@ -65,10 +65,10 @@ plt.show()
 def preprocess_image(image_path):
     """Carrega, redimensiona e normaliza a imagem para o formato do modelo."""
     img = Image.open(image_path).convert('L')  # Abrir a imagem e converter para escala de cinza
-    img = img.resize((28, 28))  # Redimensionar para 28x28
+    img = img.resize((64, 64))  # Redimensionar para 28x28
     img = np.array(img)  # Converter para um array NumPy
     img = img / 255.0  # Normalizar os valores dos pixels (0-1)
-    img = img.reshape(1, 28, 28, 1)  # Ajustar para o formato (1, 28, 28, 1) para o modelo
+    img = img.reshape(1, 64, 64, 1)  # Ajustar para o formato (1, 28, 28, 1) para o modelo
     return img
 
 # Carregar e processar a imagem
@@ -80,6 +80,6 @@ prediction = np.argmax(model.predict(processed_image), axis=1)
 prediction_alpha = num_to_char[prediction[0]]
 
 # Exibir a imagem e a predição
-plt.imshow(processed_image.reshape(28, 28), cmap='gray')
+plt.imshow(processed_image.reshape(64, 64), cmap='gray')
 plt.title(f"Predicted: {prediction_alpha}")
 plt.show()

@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 
 # Variáveis para ajustes
 totalHands = 3      # Aumente ou diminua a quantidade de mãos a detectar
-square_scale = 1.2  # Aumente ou diminua para alterar o tamanho do quadrado
+square_scale = 1.4  # Aumente ou diminua para alterar o tamanho do quadrado
 bones = False       # Mostrar ou não as ligações que identificam a mão
 detectionColour = (25, 200, 70)
 
@@ -66,14 +66,14 @@ def preprocess_image(img, hand_landmarks):
     hand_img = img[y_min_square:y_max_square, x_min_square:x_max_square]
 
     # Redimensionar para o tamanho esperado pelo modelo (28x28)
-    hand_img_resized = cv2.resize(hand_img, (28, 28))
+    hand_img_resized = cv2.resize(hand_img, (64, 64))
 
     # Converter para escala de cinza e normalizar
     hand_img_gray = cv2.cvtColor(hand_img_resized, cv2.COLOR_BGR2GRAY)
     hand_img_normalized = hand_img_gray / 255.0
 
     # Reshape para o formato esperado pelo modelo
-    hand_img_reshaped = hand_img_normalized.reshape(-1, 28, 28, 1)
+    hand_img_reshaped = hand_img_normalized.reshape(-1, 64, 64, 1)
 
     return hand_img_reshaped, x_min_square, y_min_square  # Retornar a imagem processada e as coordenadas do quadrado
 

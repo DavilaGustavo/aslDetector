@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCh
 from tensorflow.keras.utils import to_categorical
 
 # Load the data ################
-dataTrain = pd.read_csv('data/sign_mnist_train/sign_mnist_train.csv')
-dataTest = pd.read_csv('data/sign_mnist_test/sign_mnist_test.csv')
+dataTrain = pd.read_csv('imagesToCSV/asl_alphabet_train.csv')
+dataTest = pd.read_csv('imagesToCSV/asl_alphabet_test.csv')
 
 #dataTrain.info()
 #dataTest.info()
@@ -40,8 +40,8 @@ x_train = x_train / 255.0
 x_test = x_test / 255.0
 
 # reshape
-x_train = x_train.values.reshape(-1,28,28,1)
-x_test = x_test.values.reshape(-1,28,28,1)
+x_train = x_train.values.reshape(-1,64,64,1)
+x_test = x_test.values.reshape(-1,64,64,1)
 
 print(y_train)
 
@@ -64,9 +64,9 @@ y_train = to_categorical(y_train, num_classes)
 # modeling
 # Model construction
 num_features = 32
-width, height = 28, 28
+width, height = 64, 64
 batch_size = 16
-epochs = 20
+epochs = 10
 
 model = Sequential()
 
@@ -163,7 +163,7 @@ history = model.fit(np.array(Xtrain), np.array(Ytrain),
 
 # Evaluation
 
-epoch = [i for i in range(20)]
+epoch = [i for i in range(epochs)]
 fig , ax = plt.subplots(1,2)
 train_acc = history.history['accuracy']
 train_loss = history.history['loss']
