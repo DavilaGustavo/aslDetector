@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b8e91a75-371d-4f85-a8a4-cdcc0c28fa97">
+  <img src="https://github.com/user-attachments/assets/b8e91a75-371d-4f85-a8a4-cdcc0c28fa97" alt="animated gif">
 </p>
 
 # aslDetector
