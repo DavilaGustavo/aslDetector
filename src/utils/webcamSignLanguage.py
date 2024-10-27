@@ -4,7 +4,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 import eel
 import base64
-from state_manager import start_execution, is_running
+from utils.state_manager import start_execution, is_running
 
 @eel.expose
 def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
@@ -15,11 +15,14 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
         max_hands (int): Maximum number of hands to detect (default: 4)
         camera_index (int): Camera device index (default: 0)
     """
+    cap = None
+    
     try:
+        # Inicia o estado de execução
         start_execution()
         
         # Load the trained model
-        model = load_model('model/model.keras')
+        model = load_model('src/model/model.keras')
 
         # Initialize camera
         cap = cv2.VideoCapture(camera_index)
@@ -28,6 +31,7 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
 
         if not cap.isOpened():
             print("Error: Could not open webcam")
+            eel.handleWebcamError()()
             return
 
         mp_hands = mp.solutions.hands
@@ -38,11 +42,10 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
                             min_detection_confidence=0.3,
                             max_num_hands=max_hands)
 
-        # ASL alphabet without J
         alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
-        while is_running():
+        while is_running():  # Usa o controle de estado
             ret, frame = cap.read()
 
             if not ret:
@@ -96,11 +99,14 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
             # Send frame to JavaScript
             eel.updateFrame(frame_base64)()
 
-        cap.release()
-        cv2.destroyAllWindows()
-        eel.onExecutionStopped()()
-    
     except Exception as e:
         print(f"Error in webcamASL: {str(e)}")
-        eel.onExecutionStopped()()
-        return
+        eel.handleWebcamError()()
+    
+    finally:
+        # Cleanup sempre será executado
+        if cap is not None:
+            cap.release()
+        cv2.destroyAllWindows()
+        # Limpa a imagem no frontend
+        eel.clearVideoElement()()

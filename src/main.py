@@ -1,7 +1,8 @@
 import eel
 import os
 import sys
-import state_manager
+import utils.state_manager
+import tkinter as tk
 
 # Get the directory of the current script
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,16 +12,32 @@ web_dir = os.path.join(current_dir, 'web')
 eel.init(web_dir)
 
 # Import your ASL detection modules
-from executionCode.videoSignLanguage import videoASL
-from executionCode.webcamSignLanguage import webcamASL
+from utils.videoSignLanguage import videoASL
+from utils.webcamSignLanguage import webcamASL
 
 if __name__ == '__main__':
     try:
+        # Uses Tkinter to get screen information
+        root = tk.Tk()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        root.destroy()
+
+        # Define the width and height
+        window_width = screen_width - screen_width*0.35
+        window_height = screen_height - screen_height*0.11
+
+        # Calculate the central position
+        pos_x = (screen_width - window_width) // 2
+        pos_y = ((screen_height - window_height) // 2) - (0.02*screen_height)
+        print(pos_y)
+
         # Start the application with specific port and directory
         eel.start('index.html', 
                   port=8988,
                   mode='chrome',
-                  size=(1000, 800))
+                  size=(window_width, window_height),
+                  position=(pos_x, pos_y))
     except Exception as e:
         print(f"Failed to start application: {str(e)}")
         sys.exit(1)

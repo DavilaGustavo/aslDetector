@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 import eel
 import base64
 import time
-from state_manager import start_execution, is_running
+from utils.state_manager import start_execution, is_running
 
 @eel.expose
 def videoASL(file_path):
@@ -13,11 +13,14 @@ def videoASL(file_path):
     Function to detect ASL signs in a video file.
     Takes file path as input and processes the video with real-time detection.
     """
+    cap = None
+    
     try:
+        # Inicia o estado de execução
         start_execution()
         
         # Load the trained model
-        model = load_model('model/model.keras')
+        model = load_model('src/model/model.keras')
 
         # Load the video
         cap = cv2.VideoCapture(file_path)
@@ -99,10 +102,13 @@ def videoASL(file_path):
             # Control frame rate
             time.sleep(1/30)  # Limit to 30 FPS
 
-        cap.release()
-        eel.onExecutionStopped()()
-
     except Exception as e:
         print(f"Error in videoASL: {str(e)}")
-        eel.onExecutionStopped()()
-        return
+        
+    finally:
+        # Cleanup
+        if cap is not None:
+            cap.release()
+        cv2.destroyAllWindows()
+        # Limpa a imagem no frontend
+        eel.clearVideoElement()()
