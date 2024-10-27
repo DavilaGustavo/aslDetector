@@ -3,15 +3,25 @@ import pandas as pd
 import mediapipe as mp
 import cv2
 
+# Get the directory where the current script is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
+# Define paths
+data_path = os.path.join(parent_dir, 'data')
+input_path = os.path.join(parent_dir, 'inputs')
+
+# Create input directory if it doesn't exist
+os.makedirs(input_path, exist_ok=True)
+
+# Initialize MediaPipe
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
-dataFolder = '../data'
-
 data = []
 labels = []
-for dir_ in os.listdir(dataFolder):
-    dir_path = os.path.join(dataFolder, dir_)
+for dir_ in os.listdir(data_path):
+    dir_path = os.path.join(data_path, dir_)
     
     # Check if it's a directory
     if os.path.isdir(dir_path):
@@ -49,4 +59,12 @@ df = pd.DataFrame(data)
 df['label'] = labels
 
 # Save the dataframe
-df.to_csv('data.csv', index=False)
+df.to_csv(os.path.join(input_path, 'data.csv'), index=False)
+
+# Print paths for debugging
+# print(f"\nDirectories used:")
+# print(f"Current directory: {current_dir}")
+# print(f"Parent directory: {parent_dir}")
+# print(f"Data path: {data_path}")
+# print(f"Input path: {input_path}")
+# print(f"Data will be saved to: {os.path.join(input_path, 'data.csv')}")

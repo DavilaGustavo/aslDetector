@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import os
 from tensorflow.keras.models import load_model
 import eel
 import base64
@@ -18,11 +19,20 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
     cap = None
     
     try:
-        # Inicia o estado de execução
+        # Starts the execution state
         start_execution()
         
-        # Load the trained model
-        model = load_model('src/model/model.keras')
+        # Get the directory where the current script is located
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Go up one directory level if we're in src/
+        parent_dir = os.path.dirname(current_dir)
+
+        # Construct the path to the model file
+        model_path = os.path.join(parent_dir, 'model', 'model.keras')
+
+        # Load the model with the constructed path
+        model = load_model(model_path)
 
         # Initialize camera
         cap = cv2.VideoCapture(camera_index)
@@ -45,7 +55,7 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
         alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
-        while is_running():  # Usa o controle de estado
+        while is_running():  # State control
             ret, frame = cap.read()
 
             if not ret:
@@ -104,9 +114,7 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
         eel.handleWebcamError()()
     
     finally:
-        # Cleanup sempre será executado
         if cap is not None:
             cap.release()
         cv2.destroyAllWindows()
-        # Limpa a imagem no frontend
         eel.clearVideoElement()()

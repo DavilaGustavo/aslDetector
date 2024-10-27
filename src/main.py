@@ -30,7 +30,6 @@ if __name__ == '__main__':
         # Calculate the central position
         pos_x = (screen_width - window_width) // 2
         pos_y = ((screen_height - window_height) // 2) - (0.02*screen_height)
-        print(pos_y)
 
         # Start the application with specific port and directory
         eel.start('index.html', 

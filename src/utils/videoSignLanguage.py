@@ -5,6 +5,7 @@ from tensorflow.keras.models import load_model
 import eel
 import base64
 import time
+import os
 from utils.state_manager import start_execution, is_running
 
 @eel.expose
@@ -16,11 +17,20 @@ def videoASL(file_path):
     cap = None
     
     try:
-        # Inicia o estado de execução
+        # Starts the execution state
         start_execution()
         
-        # Load the trained model
-        model = load_model('src/model/model.keras')
+        # Get the directory where the current script is located
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Go up one directory level if we're in src/
+        parent_dir = os.path.dirname(current_dir)
+
+        # Construct the path to the model file
+        model_path = os.path.join(parent_dir, 'model', 'model.keras')
+
+        # Load the model with the constructed path
+        model = load_model(model_path)
 
         # Load the video
         cap = cv2.VideoCapture(file_path)
@@ -34,7 +44,7 @@ def videoASL(file_path):
 
         hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
-        # ASL alphabet without J
+        # ASL alphabet
         alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
@@ -106,9 +116,7 @@ def videoASL(file_path):
         print(f"Error in videoASL: {str(e)}")
         
     finally:
-        # Cleanup
         if cap is not None:
             cap.release()
         cv2.destroyAllWindows()
-        # Limpa a imagem no frontend
         eel.clearVideoElement()()

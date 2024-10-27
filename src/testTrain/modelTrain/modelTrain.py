@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,12 +10,27 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Activation, BatchNormalization
 
-# Define the alphabet for ASL (excluding 'J' which requires motion)
+# Get the directory where the current script is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+model_parent_dir = os.path.dirname(parent_dir)
+
+# Define paths
+input_path = os.path.join(parent_dir, 'inputs')
+output_path = os.path.join(parent_dir, 'outputs')
+model_path = os.path.join(model_parent_dir, 'model')
+
+# Create directories if they don't exist
+os.makedirs(input_path, exist_ok=True)
+os.makedirs(output_path, exist_ok=True)
+os.makedirs(model_path, exist_ok=True)
+
+# Define the alphabet for ASL
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
 # Load the data
-data_df = pd.read_csv('../inputs/data.csv')
+data_df = pd.read_csv(os.path.join(input_path, 'data.csv'))
 
 # Separate features and labels
 data = data_df.iloc[:, :-1].values  # All except the last as data
@@ -45,7 +61,7 @@ plt.xlabel("ASL Letters")
 plt.ylabel("Count")
 plt.xticks(range(len(unique)), unique, rotation=45)
 plt.tight_layout()
-plt.savefig("../outputs/asl_letters_distribution.png")
+plt.savefig(os.path.join(output_path, 'asl_letters_distribution.png'))
 plt.show()
 
 # Model configuration
@@ -87,9 +103,9 @@ model.compile(
 model.summary()
 
 # Setup callbacks
-kerasModel = '../../model/model.keras'
+keras_model_path = os.path.join(model_path, 'model.keras')
 checkpointer = ModelCheckpoint(
-    kerasModel,
+    keras_model_path,
     monitor='val_loss',
     verbose=1,
     save_best_only=True
@@ -138,5 +154,12 @@ ax[1].legend()
 ax[1].set_xlabel("Epochs")
 ax[1].set_ylabel("Loss")
 
-plt.savefig("../outputs/training_validation_graph.png")
+plt.savefig(os.path.join(output_path, 'training_validation_graph.png'))
 plt.show()
+
+# Print some information about the paths
+# print(f"\nDirectories used:")
+# print(f"Current directory: {current_dir}")
+# print(f"Parent directory: {parent_dir}")
+# print(f"Model parent directory: {model_parent_dir}")
+# print(f"Model path: {model_path}")
