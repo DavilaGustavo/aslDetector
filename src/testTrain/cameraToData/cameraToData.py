@@ -1,8 +1,6 @@
 # Code mainly focused on creating a dataset by getting frames out of the webcam
 # can be used to any image based data creation but made to be used with ASL
 
-## Not tested, waiting to get hands on a webcam ##
-
 import os
 import cv2
 

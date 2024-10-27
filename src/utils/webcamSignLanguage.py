@@ -42,7 +42,7 @@ def webcamASL(resolution=(1280, 720), max_hands=4, camera_index=0):
                             min_detection_confidence=0.3,
                             max_num_hands=max_hands)
 
-        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 
+        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
         while is_running():  # Usa o controle de estado

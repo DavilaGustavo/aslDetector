@@ -35,7 +35,7 @@ def videoASL(file_path):
         hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
         # ASL alphabet without J
-        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 
+        alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
                     'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
         while is_running() and cap.isOpened():
