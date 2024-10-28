@@ -66,24 +66,24 @@ plt.show()
 
 # Model configuration
 num_features = 64  # Increased number of features
-epochs = 60
+epochs = 100
 batch_size = 32
 
 # Create an improved neural network model
 model = Sequential([
     # Input layer with batch normalization
-    Dense(2*num_features, kernel_initializer="he_normal", input_shape=(x_train.shape[1],)),
+    Dense(2*2*num_features, kernel_initializer="he_normal", input_shape=(x_train.shape[1],)),
     BatchNormalization(),
     Activation('relu'),
     Dropout(0.2),
     
     # Hidden layers with residual-like connections
-    Dense(num_features, kernel_initializer="he_normal"),
+    Dense(2*num_features, kernel_initializer="he_normal"),
     BatchNormalization(),
     Activation('relu'),
     Dropout(0.2),
     
-    Dense(num_features//2, kernel_initializer="he_normal"),
+    Dense(num_features, kernel_initializer="he_normal"),
     BatchNormalization(),
     Activation('relu'),
     Dropout(0.1),
