@@ -66,7 +66,7 @@ plt.show()
 
 # Model configuration
 num_features = 64
-epochs = 100
+epochs = 40
 batch_size = 32
 
 # Create an improved neural network model
