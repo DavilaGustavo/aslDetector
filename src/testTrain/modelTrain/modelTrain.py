@@ -65,7 +65,7 @@ plt.savefig(os.path.join(output_path, 'asl_letters_distribution.png'))
 plt.show()
 
 # Model configuration
-num_features = 64  # Increased number of features
+num_features = 64
 epochs = 100
 batch_size = 32
 
