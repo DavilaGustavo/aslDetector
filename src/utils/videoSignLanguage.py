@@ -9,13 +9,14 @@ import os
 from utils.state_manager import start_execution, is_running
 
 @eel.expose
-def videoASL(file_path):
+def videoASL(file_path, saveVideo = 1):
     """
     Function to detect ASL signs in a video file.
     Takes file path as input and processes the video with real-time detection.
     """
     cap = None
-    
+    out = None
+
     try:
         # Starts the execution state
         start_execution()
@@ -38,11 +39,25 @@ def videoASL(file_path):
             print(f"Error: Could not open video file '{file_path}'")
             return
 
+        if saveVideo:
+            output_path = os.path.join(parent_dir, 'testTrain', 'outputs')
+            os.makedirs(output_path, exist_ok=True)
+            
+            # Obter propriedades do vídeo original
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = int(cap.get(cv2.CAP_PROP_FPS))
+            
+            # Criar arquivo de saída
+            output_file = os.path.join(output_path, 'output_video.mp4')
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out = cv2.VideoWriter(output_file, fourcc, fps, (width, height))
+
         mp_hands = mp.solutions.hands
         mp_drawing = mp.solutions.drawing_utils
         mp_drawing_styles = mp.solutions.drawing_styles
 
-        hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
+        hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.1, max_num_hands=3)
 
         # ASL alphabet
         alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 
@@ -101,6 +116,9 @@ def videoASL(file_path):
                         cv2.putText(frame, predicted_character, (x1, y1 - 10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 1.3, (255, 255, 255), 3,
                                 cv2.LINE_AA)
+
+            if saveVideo and out is not None:
+                out.write(frame)
 
             # Convert frame to JPEG
             _, buffer = cv2.imencode('.jpg', frame)
