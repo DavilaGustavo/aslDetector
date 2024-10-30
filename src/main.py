@@ -13,6 +13,7 @@ eel.init(web_dir)
 
 # Import your ASL detection modules
 from utils.videoSignLanguage import videoASL
+from utils.imageSignLanguage import imageASL
 from utils.webcamSignLanguage import webcamASL
 
 if __name__ == '__main__':
