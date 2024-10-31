@@ -59,7 +59,7 @@ df = pd.DataFrame(data)
 df['label'] = labels
 
 # Save the dataframe
-df.to_csv(os.path.join(input_path, 'dataTemporario.csv'), index=False)
+df.to_csv(os.path.join(input_path, 'data.csv'), index=False)
 
 # Print paths for debugging
 # print(f"\nDirectories used:")
