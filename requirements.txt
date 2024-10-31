@@ -1,13 +1,9 @@
 # Core requirements
-opencv-python
-mediapipe
-numpy
-tensorflow
-eel
-pandas
-matplotlib
-seaborn
-scikit-learn
+opencv-python==4.8.1.78
+mediapipe==0.10.8
+numpy==1.24.3
+tensorflow==2.15.0
+eel==0.16.0
 
 # Python standard library modules
 # - os
