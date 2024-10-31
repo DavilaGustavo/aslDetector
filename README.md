@@ -36,13 +36,17 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## Model Customization
-The `src/testTrain` folder contains all the necessary files for training and testing your own model variations. You can modify different parameters and settings to experiment with the model's behavior and performance. This allows for customization and potential improvements in accuracy, processing speed, or specific use cases. Feel free to explore and adjust the training configurations according to your needs
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7339a630-0b35-410e-bb9a-eb48bbe5f0bd">
+</p>
 
 ## Detection Modes
 - **Webcam**: Webcam for real-time detection
 - **Video**: Video file for the model to recognize
 - **Image**: Image for the model to recognize
+
+## Model Customization
+The `src/testTrain` folder contains all the necessary files for training and testing your own model variations. You can modify different parameters and settings to experiment with the model's behavior and performance. This allows for customization and potential improvements in accuracy, processing speed, or specific use cases. Feel free to explore and adjust the training configurations according to your needs
 
 ## Technical
 - **Computer Vision**: OpenCV
