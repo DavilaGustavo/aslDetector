@@ -37,7 +37,7 @@ python main.py
 ```
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7339a630-0b35-410e-bb9a-eb48bbe5f0bd">
+  <img src="https://github.com/user-attachments/assets/3f128b68-b319-48a8-b1ce-cd6f81511cc9">
 </p>
 
 ## Detection Modes
