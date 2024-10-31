@@ -37,7 +37,7 @@ python main.py
 ```
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3f128b68-b319-48a8-b1ce-cd6f81511cc9">
+  <img src="https://github.com/user-attachments/assets/635ceb77-a603-4be0-80df-ee0906990922">
 </p>
 
 ## Detection Modes
@@ -64,6 +64,13 @@ It includes complete source code for the model creation pipeline. You'll find sc
 - **Backend**: Python, Eel
 - **Frontend**: HTML/CSS/JavaScript
 - **UI Runtime**: Chrome
+
+## Datasets used
+- [grassknoted/ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)
+- [debashishsau/ASL(American Sign Language) Alphabet Dataset](https://www.kaggle.com/datasets/debashishsau/aslamerican-sign-language-aplhabet-dataset/)
+- [jordiviader/American Sign Language Alphabet (Static)](https://www.kaggle.com/datasets/jordiviader/american-sign-language-alphabet-static)
+- [lexset/Synthetic ASL Alphabet](https://www.kaggle.com/datasets/lexset/synthetic-asl-alphabet)
+- Around 19k images taken from the webcam with `src/testTrain/cameraToData`.
 
 ## Contributing
 Contributions are welcome! Feel free to submit pull requests with improvements, bug fixes, or new features. For discussions and suggestions, please open an issue.
