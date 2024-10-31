@@ -127,7 +127,7 @@ plt.ylabel('Y coordinate')
 
 # Make the plot square and set limits
 plt.axis('equal')
-margin = 0.05  # Reduced margin
+margin = 0.05
 plt.xlim(min(x_coords) - margin, max(x_coords) + margin)
 plt.ylim(min(y_coords) - margin, max(y_coords) + margin)
 
