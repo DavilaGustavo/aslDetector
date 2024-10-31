@@ -3,7 +3,8 @@
 </p>
 
 ## Description
-ASL Detector is a computer program that recognizes American Sign Language (ASL) in real time. The program can work with your webcam, videos, or pictures. Using smart computer technology, it can detect and understand hand signs, showing you the results right away on your screen.
+ASL Detector is a computer program that recognizes American Sign Language (ASL) in real time. The program can work with your webcam, videos, or pictures. Using machine learning technology, it can detect and understand hand signs, showing you the results right away on your screen.
+
 The program uses a machine learning model to recognize hand signs from the ASL alphabet. With tools like TensorFlow and MediaPipe, the system can track hands and understand signs with high accuracy.
 
 ## Features
@@ -18,7 +19,7 @@ The program uses a machine learning model to recognize hand signs from the ASL a
 - Python 3.8+
 - Google Chrome
 
-## Setup
+### Setup
 1. Clone the repository:
 ```bash
 git clone https://github.com/DavilaGustavo/aslDetector.git
