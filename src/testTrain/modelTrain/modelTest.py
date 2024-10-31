@@ -110,10 +110,10 @@ y_coords = 1 - y_coords  # Invert Y axis
 for start_idx, end_idx in HAND_CONNECTIONS:
     plt.plot([x_coords[start_idx], x_coords[end_idx]], 
              [y_coords[start_idx], y_coords[end_idx]], 
-             'g-', linewidth=2)
+             'r--', linewidth=1)
 
 # Plot the landmarks
-plt.scatter(x_coords, y_coords, c='red', s=40)
+plt.scatter(x_coords, y_coords, c='red', s=72)
 
 # Add landmark numbers for reference (with smaller font)
 for i in range(21):

@@ -46,7 +46,17 @@ python main.py
 - **Image**: Image for the model to recognize
 
 ## Model Customization
-The `src/testTrain` folder contains all the necessary files for training and testing your own model variations. You can modify different parameters and settings to experiment with the model's behavior and performance. This allows for customization and potential improvements in accuracy, processing speed, or specific use cases. Feel free to explore and adjust the training configurations according to your needs
+The `src/testTrain` folder contains all the necessary files for training and testing your own model variations. You can modify different parameters and settings to experiment with the model's behavior and performance. This allows for customization and potential improvements in accuracy, processing speed, or specific use cases. Feel free to explore and adjust the training configurations according to your needs.
+
+It includes complete source code for the model creation pipeline. You'll find scripts for capturing and saving images for the dataset, converting these images to a .csv dataset format, and both training and testing the model. While the image files themselves are not included due to size constraints, all other necessary files are present. This allows you to either start from scratch with your own images or skip certain steps by using the provided intermediate files.
+
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/fe3b644a-85f6-41d2-83f2-9d87754c9d3b" width="30%" />
+    &nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/7e1198db-569b-44e6-8bba-4af182f6764e" width="30%" />
+    &nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/f7dc9f5b-632a-4483-b19b-7440a8babdb3" width="30%" />
+</div>
 
 ## Technical
 - **Computer Vision**: OpenCV
