@@ -17,7 +17,6 @@ The program uses a machine learning model to recognize hand signs from the ASL a
 ### Prerequisites
 - Python 3.8+
 - Google Chrome
-- Webcam (for real-time detection)
 
 ## Setup
 1. Clone the repository:
