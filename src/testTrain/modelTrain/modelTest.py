@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 from tensorflow.keras.models import load_model
-from sklearn.model_selection import train_test_split
 import seaborn as sns
 
 # Get the directory where the current script is located
@@ -31,111 +30,21 @@ model = load_model(os.path.join(model_path, 'model.keras'))
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y']
 
-# Load the data for evaluation
-data_df = pd.read_csv(os.path.join(input_path, 'data.csv'))
+# Load the test data
+test_df = pd.read_csv(os.path.join(input_path, 'dataTest.csv'))
 
 # Separate features and labels
-data = data_df.iloc[:, :-1].values  # All except the last as data
-labels = data_df['label'].values    # The last column as labels
+x_test = test_df.iloc[:, :-1].values  # All except the last as data
+y_test = test_df['label'].values    # The last column as labels
 
 # Ensure labels are numeric
 try:
-    labels = labels.astype(int)
+    y_test = y_test.astype(int)
 except:
     print("Labels are not numeric, attempting to convert from strings...")
     # If labels are letters, convert them to indices
     label_to_index = {label: idx for idx, label in enumerate(alphabet)}
-    labels = np.array([label_to_index[label] for label in labels])
-
-# Split the data into training/testing sets with a random seed
-x_train, x_test, y_train, y_test = train_test_split(
-    data, labels, 
-    test_size=0.2, 
-    shuffle=True, 
-    stratify=labels, 
-    random_state=1337
-)
-
-# Load a test image
-image_file = os.path.join(input_path, 'handTest.png')
-image = cv2.imread(image_file)
-
-# Initialize mediapipe to detect hands
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-
-# Initialize hand detection with parameters
-hands = mp_hands.Hands(
-    static_image_mode=True, 
-    max_num_hands=10, 
-    min_detection_confidence=0.02
-)
-
-# Gets the height and weight
-H, W, _ = image.shape
-
-# Converts the image to rgb (mediapipe only works with rgb)
-image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-# Process the image
-results = hands.process(image_rgb)
-
-# Check if there's hands being detected
-if results.multi_hand_landmarks:
-    for hand_landmarks in results.multi_hand_landmarks:
-        data_aux = []
-        x_ = []
-        y_ = []
-
-        # Draw landmarks in the hands
-        mp_drawing.draw_landmarks(
-            image,
-            hand_landmarks,
-            mp_hands.HAND_CONNECTIONS,
-            mp_drawing_styles.get_default_hand_landmarks_style(),
-            mp_drawing_styles.get_default_hand_connections_style()
-        )
-
-        # Get the coordinates of the hand
-        for i in range(len(hand_landmarks.landmark)):
-            x = hand_landmarks.landmark[i].x
-            y = hand_landmarks.landmark[i].y
-
-            x_.append(x)
-            y_.append(y)
-
-        # Normalize the coordinates
-        for i in range(len(hand_landmarks.landmark)):
-            x = hand_landmarks.landmark[i].x
-            y = hand_landmarks.landmark[i].y
-            data_aux.append(x - min(x_))
-            data_aux.append(y - min(y_))
-
-        # Check if there's 42 dots on the hand
-        if len(data_aux) == 42:
-            # Reshape the input to a array numpy
-            data_input = np.asarray(data_aux).reshape(1, -1)
-
-            # Do the prediction
-            prediction = model.predict(data_input)
-            predicted_index = np.argmax(prediction, axis=1)[0]
-            
-            # Get the predicted character directly from alphabet
-            predicted_character = alphabet[predicted_index]
-
-            # Draw the letter
-            x1 = int(min(x_) * W) - 10
-            y1 = int(min(y_) * H) - 10
-            cv2.putText(image, predicted_character, (x1, y1 - 10), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 14, cv2.LINE_AA)
-            cv2.putText(image, predicted_character, (x1, y1 - 10), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 1.3, (255, 255, 255), 3, cv2.LINE_AA)
-
-# Show the image
-cv2.imshow('Hand Sign Detection', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    y_test = np.array([label_to_index[label] for label in y_test])
 
 # Do predictions on the test set
 y_pred = np.argmax(model.predict(x_test), axis=1)
@@ -170,15 +79,59 @@ report = classification_report(y_test_letters, y_pred_letters)
 print(report)
 print(f"Accuracy: {accuracy:.4f}")
 
-# Save the initial image after the prediction
-output_image_file = os.path.join(output_path, 'output_image.png')
-cv2.imwrite(output_image_file, image)
+# Select a random sample from test data using numpy
+random_idx = np.random.randint(0, len(x_test))
+random_sample = x_test[random_idx]
+true_label = alphabet[y_test[random_idx]]
+predicted_label = alphabet[y_pred[random_idx]]
 
-# Print paths for debugging
-# print(f"\nDirectories used:")
-# print(f"Current directory: {current_dir}")
-# print(f"Parent directory: {parent_dir}")
-# print(f"Model parent directory: {model_parent_dir}")
-# print(f"Input path: {input_path}")
-# print(f"Output path: {output_path}")
-# print(f"Model path: {model_path}")
+# Create a new figure for the hand visualization with smaller size
+plt.figure(figsize=(8, 8))
+plt.grid(True)
+
+# MediaPipe hand connections
+HAND_CONNECTIONS = [
+    (0, 1), (1, 2), (2, 3), (3, 4),  # thumb
+    (0, 5), (5, 6), (6, 7), (7, 8),  # index finger
+    (0, 9), (9, 10), (10, 11), (11, 12),  # middle finger
+    (0, 13), (13, 14), (14, 15), (15, 16),  # ring finger
+    (0, 17), (17, 18), (18, 19), (19, 20)  # pinky
+]
+
+# Extract x and y coordinates (42 points -> 21 pairs)
+x_coords = random_sample[::2]
+y_coords = random_sample[1::2]
+
+# Invert coordinates
+x_coords = 1 - x_coords  # Invert X axis
+y_coords = 1 - y_coords  # Invert Y axis
+
+# Plot the connections
+for start_idx, end_idx in HAND_CONNECTIONS:
+    plt.plot([x_coords[start_idx], x_coords[end_idx]], 
+             [y_coords[start_idx], y_coords[end_idx]], 
+             'g-', linewidth=2)
+
+# Plot the landmarks
+plt.scatter(x_coords, y_coords, c='red', s=40)
+
+# Add landmark numbers for reference (with smaller font)
+for i in range(21):
+    plt.annotate(str(i), (x_coords[i], y_coords[i]), 
+                xytext=(3, 3), textcoords='offset points', fontsize=8)
+
+# Customize the plot
+plt.title(f'Hand Landmarks\nTrue Label: {true_label} | Predicted: {predicted_label}')
+plt.xlabel('X coordinate')
+plt.ylabel('Y coordinate')
+
+# Make the plot square and set limits
+plt.axis('equal')
+margin = 0.05  # Reduced margin
+plt.xlim(min(x_coords) - margin, max(x_coords) + margin)
+plt.ylim(min(y_coords) - margin, max(y_coords) + margin)
+
+# Save the visualization
+output_image_file = os.path.join(output_path, 'random_test_sample.png')
+plt.savefig(output_image_file, bbox_inches='tight')
+plt.show()
