@@ -97,6 +97,8 @@ def imageASL(file_path):
                     predicted_index = np.argmax(prediction, axis=1)[0]
                     predicted_character = alphabet[predicted_index]
                     
+                    print(f'Predicted character: {predicted_character}')
+
                     # Draw prediction on image
                     x1 = int(min(x_) * W) - 10
                     y1 = int(min(y_) * H) - 10
